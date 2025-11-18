@@ -4,14 +4,6 @@
 
 The course portal aggregates every deliverable for ITCS333: authentication, student management, learning resources, weekly breakdowns, assignments, and the discussion board.
 
-## Team
-
-| Student | ID | Role |
-| :-- | :-- | :-- |
-| Hasan Nader Hasan Albanna | 202203326 | Front-end specialist |
-| Abdulla Jaafar Abdulla Alasmawi | 202204847 | Backend & integrations |
-| Qasim Faisal Jasim Ali | 202206792 | Data & QA lead |
-
 ## Task Ownership
 
 | Task | Owner | Notes |
