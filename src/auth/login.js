@@ -18,12 +18,16 @@
 // the HTML document is parsed before this script runs.
 
 // TODO: Select the login form. (You'll need to add id="login-form" to the <form> in your HTML).
-
+let form = document.getElementById('login-form');
 // TODO: Select the email input element by its ID.
-
+let emailInput = document.getElementById('email');
 // TODO: Select the password input element by its ID.
-
+let passwordInput = document.getElementById('password');
 // TODO: Select the message container element by its ID.
+let messageContainer = document.getElementById('message-container');
+const LOGIN_ENDPOINT = '../../server/api/login.php';
+const ADMIN_DASHBOARD = '../admin/manage_users.html';
+const STUDENT_LANDING = '../../index.html';
 
 // --- Functions ---
 
@@ -39,7 +43,9 @@
  * (this will allow for CSS styling of 'success' and 'error' states).
  */
 function displayMessage(message, type) {
-  // ... your implementation here ...
+
+    messageContainer.textContent = message;
+    messageContainer.className = type;
 }
 
 /**
@@ -55,7 +61,8 @@ function displayMessage(message, type) {
  * A simple regex for this purpose is: /\S+@\S+\.\S+/
  */
 function isValidEmail(email) {
-  // ... your implementation here ...
+  const emailRegex = /\S+@\S+\.\S+/;
+  return emailRegex.test(email);
 }
 
 /**
@@ -69,7 +76,8 @@ function isValidEmail(email) {
  * 3. Return `false` if the password is not valid.
  */
 function isValidPassword(password) {
-  // ... your implementation here ...
+  return password.length >= 8;
+
 }
 
 /**
@@ -86,8 +94,50 @@ function isValidPassword(password) {
  * - Call `displayMessage("Login successful!", "success")`.
  * - (Optional) Clear the email and password input fields.
  */
-function handleLogin(event) {
-  // ... your implementation here ...
+async function handleLogin(event) {
+  event.preventDefault();
+
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+
+  if (!isValidEmail(email)) {
+    displayMessage("Invalid email format.", "error");
+    return;
+  }
+
+  if (!isValidPassword(password)) {
+    displayMessage("Password must be at least 8 characters.", "error");
+    return;
+  }
+
+  try {
+    const response = await fetch(LOGIN_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email, password })
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.error || 'Login failed.');
+    }
+
+    const { user } = result;
+    displayMessage("Login successful! Redirecting...", "success");
+    emailInput.value = '';
+    passwordInput.value = '';
+
+    const destination = user && user.role === 'admin'
+      ? ADMIN_DASHBOARD
+      : STUDENT_LANDING;
+
+    setTimeout(() => {
+      window.location.href = destination;
+    }, 800);
+  } catch (error) {
+    displayMessage(error.message, "error");
+  }
 }
 
 /**
@@ -100,6 +150,13 @@ function handleLogin(event) {
  */
 function setupLoginForm() {
   // ... your implementation here ...
+
+  if (form) {
+    form.addEventListener('submit', handleLogin);
+  }
+  else {  
+    console.error("Login form not found!");
+  }
 }
 
 // --- Initial Page Load ---
