@@ -1,0 +1,117 @@
+:root {
+    --bg-color: #0f172a;
+    --card-bg: #1e293b;
+    --primary-color: #38bdf8;
+    --primary-dark: #0ea5e9;
+    --text-color: #f8fafc;
+    --muted-color: #94a3b8;
+    --font-stack: 'Inter', 'Segoe UI', Arial, sans-serif;
+    --border-color: #334155;
+}
+
+body {
+    background: var(--bg-color);
+    font-family: var(--font-stack);
+    color: var(--text-color);
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+header .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+header h1 {
+    margin-bottom: 0.3rem;
+}
+
+header p {
+    color: var(--muted-color);
+}
+
+.card {
+    margin-bottom: 2rem;
+    background: var(--card-bg);
+    border-radius: 16px;
+    box-shadow: 0 16px 35px rgba(15, 35, 95, 0.08);
+    padding: 2rem;
+}
+
+details {
+    margin-top: 1rem;
+}
+
+#search-input {
+    margin: 1rem 0;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: #0f172a;
+    color: var(--text-color);
+}
+
+#student-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(15, 35, 95, 0.06);
+}
+
+#student-table th,
+#student-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#student-table th {
+    text-align: left;
+    cursor: pointer;
+    color: var(--muted-color);
+    background: rgba(56, 189, 248, 0.1);
+    user-select: none;
+}
+
+#student-table tr:last-child td {
+    border-bottom: none;
+}
+
+#student-table button {
+    margin-right: 0.5rem;
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+#student-table button:hover {
+    background: var(--primary-dark);
+}
+
+.logout-button {
+    background: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.logout-button:hover {
+    background: var(--primary-color);
+    color: var(--text-color);
+}
