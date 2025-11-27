@@ -63,6 +63,8 @@ function displayMessage(message, type) {
 function isValidEmail(email) {
   const emailRegex = /\S+@\S+\.\S+/;
   return emailRegex.test(email);
+  const emailRegex = /\S+@\S+\.\S+/;
+  return emailRegex.test(email);
 }
 
 /**

@@ -1,0 +1,96 @@
+:root {
+    --bg-color: #0f172a;
+    --card-bg: #1e293b;
+    --primary-color: #38bdf8;
+    --primary-dark: #0ea5e9;
+    --text-color: #f8fafc;
+    --muted-color: #94a3b8;
+    --font-stack: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+/* ===========================
+   Homepage Styling
+   =========================== */
+body.homepage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--bg-color);
+    padding: 20px;
+    font-family: var(--font-stack);
+    min-height: 100vh;
+    color: var(--text-color);
+}
+
+/* Card wrapper for homepage content */
+.homepage-card {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 16px 35px rgba(15, 35, 95, 0.08);
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+}
+
+/* Header titles */
+.homepage-card h1 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.homepage-card p {
+    font-size: 1rem;
+    color: var(--muted-color);
+    margin-bottom: 20px;
+}
+
+/* Navigation */
+.homepage-card nav {
+    text-align: left;
+}
+
+.homepage-card nav h2 {
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+    color: var(--text-color);
+}
+
+.homepage-card nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.homepage-card nav li {
+    margin: 10px 0;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+    padding-bottom: 6px;
+}
+
+.homepage-card nav a {
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.homepage-card nav a:hover {
+    color: var(--primary-dark);
+}
+
+/* Optional: unify button style for links later */
+.homepage-card a.button {
+    display: inline-block;
+    background: var(--primary-color);
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-align: center;
+    transition: background 0.3s ease;
+}
+
+.homepage-card a.button:hover {
+    background: var(--primary-dark);
+}
