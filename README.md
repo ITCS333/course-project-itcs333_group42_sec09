@@ -4,6 +4,45 @@
 
 The course portal aggregates every deliverable for ITCS333: authentication, student management, learning resources, weekly breakdowns, assignments, and the discussion board.
 
+## Quick Start (local)
+
+```bash
+# 1) Install runtime + MySQL (Debian/Ubuntu example)
+sudo apt update && sudo apt install -y php php-mysql mysql-server
+
+# 2) Start MySQL and load schema
+sudo systemctl start mysql
+mysql -u root -p < schema.sql
+
+# 3) Export DB credentials (or edit src/config/database.php)
+export DB_HOST=127.0.0.1
+export DB_PORT=3306
+export DB_NAME=course_db
+export DB_USER=root
+export DB_PASS=123   # replace with your own
+
+# 4) Serve the app from the repo root
+php -S 0.0.0.0:8000 -t .
+```
+
+Open `http://localhost:8000/index.html` (or `src/auth/login.html`) and log in with the sample admin user from your seeded DB.
+
+## Database (MySQL)
+
+- Schema file: `schema.sql` (creates `course_db` + tables).
+- Import: `mysql -u <user> -p -h <host> -P <port> < schema.sql`
+- Env vars read by `src/config/database.php`: `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS`, `DB_SOCKET` (optional).
+
+## Replit
+
+The repo includes a `.replit` and `replit.nix` so it boots with PHP + MySQL client:
+
+1) Add Secrets in Replit:
+   - `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS` (point to an external MySQL; Replit doesn’t ship MySQL server).
+2) Import schema into that database: `mysql -u $DB_USER -p -h $DB_HOST -P $DB_PORT < schema.sql`
+3) Run: the default Replit run command is `php -S 0.0.0.0:$PORT -t .`
+4) Open the web preview; the app will use the env vars for DB connectivity.
+
 ## Task Ownership
 
 | Task | Owner | Notes |
@@ -64,19 +103,14 @@ Replit deployment: _TBD_
 
 ## Backend / API Overview
 
-All endpoints live under `server/api` and expect JSON. Authentication relies on PHP sessions, so `fetch` calls must include `credentials: 'include'`.
+All PHP APIs live under `src/auth/api` (auth/session) and `src/admin/api` (students/resources/weeks/assignments/discussion). Endpoints expect JSON and use PHP sessions, so `fetch` calls must include `credentials: 'include'`.
 
-| Endpoint | Methods | Description |
-| :-- | :-- | :-- |
-| `login.php` | `POST` | Authenticates a user and creates a session |
-| `logout.php` | `POST` | Destroys the active session |
-| `session.php` | `GET` | Returns the logged-in user (if any) |
-| `students.php` | `GET/POST/PUT/DELETE` | Admin-only student CRUD backing the portal |
-| `password.php` | `POST` | Updates the currently logged-in user password |
-| `resources.php` | `GET/POST/PUT/DELETE` + comments | Powers Task 2 |
-| `weekly.php` | `GET/POST/PUT/DELETE` + comments | Powers Task 3 |
-| `assignments.php` | `GET/POST/PUT/DELETE` + comments | Powers Task 4 |
-| `discussions.php` | `GET/POST/PUT/DELETE` + comments | Powers Task 5 |
+Key endpoints:
+- `src/auth/api/index.php` – login
+- `src/auth/api/logout.php` – logout
+- `src/auth/api/session.php` – session status
+- `src/auth/api/change_password.php` – password update
+- `src/admin/api/index.php` – student CRUD + resource/week/assignment/discussion routes
 
 ## Front-end Structure
 
