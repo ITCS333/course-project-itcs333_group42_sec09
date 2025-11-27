@@ -1,6 +1,6 @@
 async function loadSession() {
   try {
-    const response = await fetch("src/auth/api/session.php");
+    const response = await fetch("/src/auth/api/session.php");
     const data = await response.json();
     const role = data.user?.role || "guest";
     const name = data.user?.name || "Guest";
@@ -34,11 +34,11 @@ async function loadSession() {
 
 async function handleLogout() {
   try {
-    await fetch("src/auth/api/logout.php", { method: "POST" });
+    await fetch("/src/auth/api/logout.php", { method: "POST" });
   } catch (error) {
     // ignore
   } finally {
-    window.location.href = "src/auth/login.html";
+    window.location.href = "/src/auth/login.html";
   }
 }
 
@@ -50,22 +50,43 @@ function setupMenuToggle() {
   const toggleButton = document.getElementById("menu-toggle");
   if (!sidebar || !toggleButton) return;
 
+  let userCollapsed = false;
+  let forcedCollapsed = false;
+
   const setState = (collapsed) => {
     if (collapsed) {
       sidebar.classList.add("collapsed");
       body.classList.add("collapsed");
-      toggleButton.textContent = "Show Menu";
+      toggleButton.innerHTML = "&#x25B8;";
     } else {
       sidebar.classList.remove("collapsed");
       body.classList.remove("collapsed");
-      toggleButton.textContent = "Hide Menu";
+      toggleButton.innerHTML = "&#x25C2;";
+    }
+  };
+
+  const applyResponsiveState = () => {
+    const compact = window.innerWidth < 900;
+    forcedCollapsed = compact;
+
+    if (forcedCollapsed) {
+      setState(true);
+      toggleButton.disabled = true;
+      toggleButton.innerHTML = "&#9776;";
+    } else {
+      toggleButton.disabled = false;
+      setState(userCollapsed);
     }
   };
 
   toggleButton.addEventListener("click", () => {
-    const collapsed = body.classList.toggle("collapsed");
-    setState(collapsed);
+    if (forcedCollapsed) return;
+    userCollapsed = !userCollapsed;
+    setState(userCollapsed);
   });
 
   setState(body.classList.contains("collapsed"));
+  userCollapsed = body.classList.contains("collapsed");
+  applyResponsiveState();
+  window.addEventListener("resize", applyResponsiveState);
 }
