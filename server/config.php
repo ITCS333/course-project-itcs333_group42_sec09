@@ -10,5 +10,8 @@ return [
     'db_port' => (int) (getenv('DB_PORT') ?: 3306),
     'db_name' => getenv('DB_NAME') ?: 'itcs333_course',
     'db_user' => getenv('DB_USER') ?: 'root',
+    'db_port' => (int) (getenv('DB_PORT') ?: 3306),
+    'db_name' => getenv('DB_NAME') ?: 'itcs333_course',
+    'db_user' => getenv('DB_USER') ?: 'root',
     'db_pass' => getenv('DB_PASS') ?: '123',
 ];
