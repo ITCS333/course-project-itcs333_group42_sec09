@@ -1,0 +1,84 @@
+.manage-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+#student-table {
+  width: 100%;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+header{
+display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+
+
+main {
+  margin-top: 16px;
+  width: 100%;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+details {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.5rem 1rem 1rem;
+  box-shadow: var(--shadow);
+}
+
+summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--text);
+}
+
+input[type="search"] {
+  min-width: 260px;
+}
+
+table button {
+  margin-right: 6px;
+}
+
+.content-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* Align content to the right of the fixed sidebar */
+body.container.with-fixed-menu {
+  max-width: none;
+  padding: 0;
+}
+
+body.container.with-fixed-menu .page-header,
+body.container.with-fixed-menu .app-shell {
+  width: calc(100% - var(--menu-width-desktop));
+}
