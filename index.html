@@ -23,20 +23,22 @@
 
      <div class ="homepage-card">
     <!-- TODO: Create a 'header' with a main heading ('h1') like "Welcome to the Web Development Course". -->
-    <header class="container page-header">
-        <div>
+    <header class="top-bar">
+        <div class="topbar-left">
+            <button id="menu-toggle" class="secondary icon-button" type="button">&#x25C2; Hide menu</button>
+        </div>
+        <div class="topbar-center">
             <h1>Welcome to the Web Development Course</h1>
             <p class="muted">Your hub for assignments, resources, and discussions.</p>
         </div>
-        <div class="header-actions">
-            <button id="menu-toggle" class="secondary" type="button">Hide Menu</button>
-        <div class="user-chip" id="user-chip">
-            <div class="user-meta">
-                <span id="user-name">Guest</span>
-                <span class="badge" id="user-role">Visitor</span>
+        <div class="topbar-right">
+            <div class="user-chip" id="user-chip">
+                <div class="user-meta">
+                    <span id="user-name">Guest</span>
+                    <span class="badge" id="user-role">Visitor</span>
+                </div>
             </div>
             <button id="auth-button" class="secondary" type="button">Login</button>
-        </div>
         </div>
     </header>
 

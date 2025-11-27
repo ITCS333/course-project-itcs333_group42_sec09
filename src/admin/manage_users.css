@@ -6,31 +6,20 @@
   flex-wrap: wrap;
 }
 
+.manage-toolbar input[type="search"] {
+  flex: 1;
+  min-width: 240px;
+  max-width: 360px;
+}
+
 #student-table {
   width: 100%;
 }
 
-.header-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-header{
-display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    margin-top: 16px;
-    flex-wrap: wrap;
-}
-
-
-
 main {
   margin-top: 16px;
   width: 100%;
+  min-width: 360px;
 }
 
 .main-content {
@@ -40,6 +29,7 @@ main {
   align-items: flex-start;
   padding: 16px;
   box-sizing: border-box;
+  min-width: 360px;
 }
 
 details {
@@ -68,17 +58,30 @@ table button {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 960px;
+  width: min(1100px, 100%);
+  min-width: 360px;
   margin: 0 auto;
+  max-width: 1200px;
 }
 
-/* Align content to the right of the fixed sidebar */
-body.container.with-fixed-menu {
-  max-width: none;
-  padding: 0;
+.content-panel fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 320px;
 }
 
-body.container.with-fixed-menu .page-header,
-body.container.with-fixed-menu .app-shell {
-  width: calc(100% - var(--menu-width-desktop));
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table-wrapper table {
+  min-width: 640px;
+}
+
+@media (max-width: 700px) {
+  .table-wrapper table {
+    min-width: 520px;
+  }
 }
