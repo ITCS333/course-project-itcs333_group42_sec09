@@ -1,0 +1,29 @@
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.login-container {
+  width: min(460px, 94vw);
+}
+
+section {
+  margin: 0 auto;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+fieldset {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+#message-container {
+  margin-top: 0.75rem;
+}
