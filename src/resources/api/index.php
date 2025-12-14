@@ -1,5 +1,7 @@
 
 <?php 
+session_start();
+$_SESSION['initialized'] = true;
 /**
  * Course Resources API
  *
@@ -202,7 +204,7 @@ function deleteResource($db, $resourceId) {
         $db->prepare("DELETE FROM resources WHERE id = ?")->execute([$resourceId]);
         $db->commit();
         sendResponse(['success' => true, 'message' => 'Resource deleted']);
-    } catch (Exception $e) {
+     } catch (PDOException $e) {
         $db->rollBack();
         sendResponse(['success' => false, 'message' => 'Delete failed'], 500);
     }
@@ -296,7 +298,7 @@ try {
     } else {
         sendResponse(['success' => false, 'message' => 'Method not allowed'], 405);
     }
-} catch (Exception $e) {
+} catch (PDOException $e) {
     sendResponse(['success' => false, 'message' => 'Server error'], 500);
 }
 
