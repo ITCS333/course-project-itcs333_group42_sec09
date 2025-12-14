@@ -1,19 +1,16 @@
-/*
-  Requirement: Populate the resource detail page and discussion forum.
 
-  Instructions:
-  1. Link this file to `details.html` using:
-     <script src="details.js" defer></script>
 
-  2. In `details.html`, add the following IDs:
-     - To the <h1>: `id="resource-title"`
-     - To the description <p>: `id="resource-description"`
-     - To the "Access Resource Material" <a> tag: `id="resource-link"`
-     - To the <div> for comments: `id="comment-list"`
-     - To the "Leave a Comment" <form>: `id="comment-form"`
-     - To the <textarea>: `id="new-comment"`
-
-  3. Implement the TODOs below.
+/* Requirement: Populate the resource detail page and discussion forum.
+Instructions:
+1. Link this file to `details.html` using:
+2. In `details.html`, add the following IDs:
+- To the <h2>: `id="resource-title"`
+- To the description <p>: `id="resource-description"`
+- To the "Access Resource Material" <a>: `id="resource-link"`
+- To the <section> for comments: `id="comment-list"`
+- To the "Leave a Comment" <form>: `id="comment-form"`
+- To the <textarea>: `id="new-comment"`
+3. Implement the TODOs below.
 */
 
 // --- Global Data Store ---
@@ -23,9 +20,14 @@ let currentComments = [];
 
 // --- Element Selections ---
 // TODO: Select all the elements you added IDs for in step 2.
+const resourceTitle = document.querySelector('#resource-title');
+const resourceDescription = document.querySelector('#resource-description');
+const resourceLink = document.querySelector('#resource-link');
+const commentList = document.querySelector('#comment-list');
+const commentForm = document.querySelector('#comment-form');
+const newComment = document.querySelector('#new-comment');
 
 // --- Functions ---
-
 /**
  * TODO: Implement the getResourceIdFromURL function.
  * It should:
@@ -34,7 +36,8 @@ let currentComments = [];
  * 3. Return the id.
  */
 function getResourceIdFromURL() {
-  // ... your implementation here ...
+  const params = new URLSearchParams(window.location.search);
+  return params.get('id');
 }
 
 /**
@@ -46,17 +49,28 @@ function getResourceIdFromURL() {
  * 3. Set the `href` attribute of `resourceLink` to the resource's link.
  */
 function renderResourceDetails(resource) {
-  // ... your implementation here ...
+  resourceTitle.textContent = resource.title;
+  resourceDescription.textContent = resource.description;
+  resourceLink.setAttribute('href', resource.link);
 }
 
 /**
  * TODO: Implement the createCommentArticle function.
  * It takes one comment object {author, text}.
- * It should return an <article> element matching the structure in `details.html`.
- * (e.g., an <article> containing a <p> and a <footer>).
+ * It should return an element matching the structure in `details.html`.
  */
 function createCommentArticle(comment) {
-  // ... your implementation here ...
+  const article = document.createElement('article');
+  const textElem = document.createElement('p');
+  textElem.textContent = comment.text;
+
+  const footerElem = document.createElement('footer');
+  footerElem.textContent = `Posted by: ${comment.author}`;
+
+  article.appendChild(textElem);
+  article.appendChild(footerElem);
+
+  return article;
 }
 
 /**
@@ -65,10 +79,14 @@ function createCommentArticle(comment) {
  * 1. Clear the `commentList`.
  * 2. Loop through the global `currentComments` array.
  * 3. For each comment, call `createCommentArticle()`, and
- * append the resulting <article> to `commentList`.
+ * append the resulting to `commentList`.
  */
 function renderComments() {
-  // ... your implementation here ...
+  commentList.innerHTML = '';
+  for (const comment of currentComments) {
+    const commentElem = createCommentArticle(comment);
+    commentList.appendChild(commentElem);
+  }
 }
 
 /**
@@ -79,13 +97,23 @@ function renderComments() {
  * 2. Get the text from `newComment.value`.
  * 3. If the text is empty, return.
  * 4. Create a new comment object: { author: 'Student', text: commentText }
- * (For this exercise, 'Student' is a fine hardcoded author).
  * 5. Add the new comment to the global `currentComments` array (in-memory only).
  * 6. Call `renderComments()` to refresh the list.
  * 7. Clear the `newComment` textarea.
  */
 function handleAddComment(event) {
-  // ... your implementation here ...
+  event.preventDefault();
+  const commentText = newComment.value.trim();
+  if (!commentText) return;
+
+  const newCommentObj = {
+    author: 'Student',
+    text: commentText
+  };
+
+  currentComments.push(newCommentObj);
+  renderComments();
+  newComment.value = '';
 }
 
 /**
@@ -106,7 +134,39 @@ function handleAddComment(event) {
  * 8. If the resource is not found, display an error in `resourceTitle`.
  */
 async function initializePage() {
-  // ... your implementation here ...
+  currentResourceId = getResourceIdFromURL();
+  if (!currentResourceId) {
+    resourceTitle.textContent = 'Resource not found.';
+    return;
+  }
+
+  try {
+    const [resourcesResponse, commentsResponse] = await Promise.all([
+      fetch('resources.json'),
+      fetch('resource-comments.json')
+    ]);
+
+    const resources = await resourcesResponse.json();
+    const commentsData = await commentsResponse.json();
+
+    // Compare IDs as strings to avoid type mismatch (e.g., "3" vs 3).
+    const idStr = String(currentResourceId);
+    const resource = resources.find(r => String(r.id) === idStr);
+
+    // Comments keyed by id; fall back to empty array if none found.
+    currentComments = commentsData[idStr] || [];
+
+    if (resource) {
+      renderResourceDetails(resource);
+      renderComments();
+      commentForm.addEventListener('submit', handleAddComment);
+    } else {
+      resourceTitle.textContent = 'Resource not found.';
+    }
+  } catch (error) {
+    resourceTitle.textContent = 'Error loading resource.';
+    console.error(error);
+  }
 }
 
 // --- Initial Page Load ---

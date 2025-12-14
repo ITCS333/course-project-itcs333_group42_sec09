@@ -1,14 +1,10 @@
-/*
-  Requirement: Make the "Manage Resources" page interactive.
 
-  Instructions:
-  1. Link this file to `admin.html` using:
-     <script src="admin.js" defer></script>
-  
-  2. In `admin.html`, add an `id="resources-tbody"` to the <tbody> element
-     inside your `resources-table`.
-  
-  3. Implement the TODOs below.
+
+/* Requirement: Make the "Manage Resources" page interactive.
+Instructions:
+1. Link this file to `admin.html` using:
+2. In `admin.html`, add an `id="resources-tbody"` to the element inside your `resources-table`.
+3. Implement the TODOs below.
 */
 
 // --- Global Data Store ---
@@ -17,11 +13,12 @@ let resources = [];
 
 // --- Element Selections ---
 // TODO: Select the resource form ('#resource-form').
+const resourceForm = document.querySelector('#resource-form');
 
 // TODO: Select the resources table body ('#resources-tbody').
+const resourcesTableBody = document.querySelector('#resources-tbody');
 
 // --- Functions ---
-
 /**
  * TODO: Implement the createResourceRow function.
  * It takes one resource object {id, title, description}.
@@ -29,11 +26,38 @@ let resources = [];
  * 1. A <td> for the `title`.
  * 2. A <td> for the `description`.
  * 3. A <td> containing two buttons:
- * - An "Edit" button with class "edit-btn" and `data-id="${id}"`.
- * - A "Delete" button with class "delete-btn" and `data-id="${id}"`.
+ *    - An "Edit" button with class "edit-btn" and `data-id="${id}"`.
+ *    - A "Delete" button with class "delete-btn" and `data-id="${id}"`.
  */
 function createResourceRow(resource) {
-  // ... your implementation here ...
+  const tr = document.createElement('tr');
+
+  const titleTd = document.createElement('td');
+  titleTd.textContent = resource.title;
+
+  const descTd = document.createElement('td');
+  descTd.textContent = resource.description;
+
+  const actionsTd = document.createElement('td');
+
+  const editBtn = document.createElement('button');
+  editBtn.textContent = 'Edit';
+  editBtn.className = 'edit-btn';
+  editBtn.setAttribute('data-id', resource.id);
+
+  const deleteBtn = document.createElement('button');
+  deleteBtn.textContent = 'Delete';
+  deleteBtn.className = 'delete-btn';
+  deleteBtn.setAttribute('data-id', resource.id);
+
+  actionsTd.appendChild(editBtn);
+  actionsTd.appendChild(deleteBtn);
+
+  tr.appendChild(titleTd);
+  tr.appendChild(descTd);
+  tr.appendChild(actionsTd);
+
+  return tr;
 }
 
 /**
@@ -45,7 +69,11 @@ function createResourceRow(resource) {
  * append the resulting <tr> to `resourcesTableBody`.
  */
 function renderTable() {
-  // ... your implementation here ...
+  resourcesTableBody.innerHTML = '';
+  for (const resource of resources) {
+    const row = createResourceRow(resource);
+    resourcesTableBody.appendChild(row);
+  }
 }
 
 /**
@@ -60,7 +88,28 @@ function renderTable() {
  * 6. Reset the form.
  */
 function handleAddResource(event) {
-  // ... your implementation here ...
+  event.preventDefault();
+
+  const titleInput = document.querySelector('#title');
+  const descInput = document.querySelector('#description');
+  const linkInput = document.querySelector('#link');
+
+  const title = titleInput.value.trim();
+  const description = descInput.value.trim();
+  const link = linkInput.value.trim();
+
+  if (!title || !description) return;
+
+  const newResource = {
+    id: `res_${Date.now()}`,
+    title: title,
+    description: description,
+    link: link
+  };
+
+  resources.push(newResource);
+  renderTable();
+  resourceForm.reset();
 }
 
 /**
@@ -74,7 +123,11 @@ function handleAddResource(event) {
  * 4. Call `renderTable()` to refresh the list.
  */
 function handleTableClick(event) {
-  // ... your implementation here ...
+  if (event.target.classList.contains('delete-btn')) {
+    const idToDelete = event.target.getAttribute('data-id');
+    resources = resources.filter(resource => resource.id !== idToDelete); // fixed =>
+    renderTable();
+  }
 }
 
 /**
@@ -88,7 +141,17 @@ function handleTableClick(event) {
  * 5. Add the 'click' event listener to `resourcesTableBody` (calls `handleTableClick`).
  */
 async function loadAndInitialize() {
-  // ... your implementation here ...
+  try {
+    const response = await fetch('resources.json');
+    resources = await response.json();
+
+    renderTable();
+
+    resourceForm.addEventListener('submit', handleAddResource);
+    resourcesTableBody.addEventListener('click', handleTableClick);
+  } catch (error) {
+    console.error('Error loading resources:', error);
+  }
 }
 
 // --- Initial Page Load ---
