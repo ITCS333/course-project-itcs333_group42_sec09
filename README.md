@@ -48,7 +48,7 @@ The repo includes a `.replit` and `replit.nix` so it boots with PHP + MySQL clie
 | Task | Owner | Notes |
 | :-- | :-- | :-- |
 | Task 1 – Homepage, Login, Admin Portal | Abdulla Jaafar Abdulla Alasmawi | Completed with PHP session-backed auth and CRUD |
-| Task 2 – Course Resources |  | Uses `server/api/resources.php` (CRUD + comments) |
+| Task 2 – Course Resources | QASIM FAISAL JASIM ALI | Uses `server/api/resources.php` (CRUD + comments) |
 | Task 3 – Weekly Breakdown |  | Uses `server/api/weekly.php` (CRUD + comments) |
 | Task 4 – Assignments | TBD | Back-end scaffolding ready via `server/api/assignments.php` |
 | Task 5 – General Discussion Board | TBD | Back-end scaffolding ready via `server/api/discussions.php` |
