@@ -1,4 +1,3 @@
-
 <?php 
 session_start();
 $_SESSION['initialized'] = true;
@@ -75,6 +74,14 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 // TODO: Get the request body for POST and PUT requests
 $input = json_decode(file_get_contents('php://input'), true);
+
+/* ===== STRICT REQUIRED EDIT (JSON VALIDATION) ===== */
+if (in_array($method, ['POST', 'PUT']) && !$input) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'Invalid JSON body'], JSON_PRETTY_PRINT);
+    exit;
+}
+/* ================================================= */
 
 // TODO: Parse query parameters
 $action = $_GET['action'] ?? null;

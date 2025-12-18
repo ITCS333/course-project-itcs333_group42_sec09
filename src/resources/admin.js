@@ -1,5 +1,3 @@
-
-
 /* Requirement: Make the "Manage Resources" page interactive.
 Instructions:
 1. Link this file to `admin.html` using:
@@ -82,7 +80,7 @@ function renderTable() {
  * It should:
  * 1. Prevent the form's default submission.
  * 2. Get the values from the title, description, and link inputs.
- * 3. Create a new resource object with a unique ID (e.g., `id: \`res_${Date.now()}\``).
+ * 3. Create a new resource object with a unique ID (e.g., `id: `res_${Date.now()}`).
  * 4. Add this new resource object to the global `resources` array (in-memory only).
  * 5. Call `renderTable()` to refresh the list.
  * 6. Reset the form.
@@ -142,7 +140,7 @@ function handleTableClick(event) {
  */
 async function loadAndInitialize() {
   try {
-    const response = await fetch('resources.json');
+    const response = await fetch('./api/resources.json');
     resources = await response.json();
 
     renderTable();

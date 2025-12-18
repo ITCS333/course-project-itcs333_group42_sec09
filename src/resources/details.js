@@ -1,5 +1,3 @@
-
-
 /* Requirement: Populate the resource detail page and discussion forum.
 Instructions:
 1. Link this file to `details.html` using:
@@ -142,18 +140,16 @@ async function initializePage() {
 
   try {
     const [resourcesResponse, commentsResponse] = await Promise.all([
-      fetch('resources.json'),
-      fetch('resource-comments.json')
+      fetch('./api/resources.json'),
+      fetch('./api/comments.json')
     ]);
 
     const resources = await resourcesResponse.json();
     const commentsData = await commentsResponse.json();
 
-    // Compare IDs as strings to avoid type mismatch (e.g., "3" vs 3).
     const idStr = String(currentResourceId);
     const resource = resources.find(r => String(r.id) === idStr);
 
-    // Comments keyed by id; fall back to empty array if none found.
     currentComments = commentsData[idStr] || [];
 
     if (resource) {

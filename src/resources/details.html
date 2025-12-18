@@ -1,4 +1,3 @@
-
 <!--
   Requirement: Create the Dedicated Page for a Single Resource
 
@@ -11,7 +10,7 @@
     <!-- TODO: Add meta tags for charset and viewport. -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- TODO: Add a title. You can make it dynamic later, but for now, use "Resource Details". -->
     <title>Resource Details</title>
 
@@ -22,7 +21,7 @@
 <body>
     <!-- TODO: Create a 'header' with a main heading ('h1'). You can use a dummy title like "Chapter 1 Notes". -->
     <header>
-        <h1>Chapter 1 Notes</h1>
+        <h1 id="resource-title">Chapter 1 Notes</h1>
     </header>
 
     <!-- TODO: Create the 'main' content area. -->
@@ -36,7 +35,7 @@
             <!-- TODO: Add an anchor tag ('a') that links to the actual resource URL (use a dummy link like "https://example.com").
                  - Text should be "Access Resource Material".
                  - Consider adding 'target="_blank"' to open it in a new tab. -->
-            <a href="https://example.com" target="_blank">Access Resource Material</a>
+            <a id="resource-link" href="https://example.com" target="_blank">Access Resource Material</a>
         </article>
         <!-- End of article. -->
 
@@ -72,7 +71,7 @@
 
             <!-- Subsection 2.2: Add a Comment Form -->
             <!-- TODO: Create a 'form' for users to post new comments. Action can be '#'. -->
-            <form action="#">
+            <form id="comment-form" action="#">
                 <!-- TODO: Use a 'fieldset' to group the controls. -->
                 <fieldset>
                     <!-- TODO: Add a 'legend', e.g., "Leave a Comment". -->
@@ -83,7 +82,7 @@
                          - textarea 'id': "new-comment", required -->
                     <label for="new-comment">Your Comment:</label><br>
                     <textarea id="new-comment" name="new-comment" rows="4" cols="50" required></textarea><br>
-                    
+
                     <!-- TODO: Add a 'button' to submit the comment.
                          - type="submit", Text: "Post Comment" -->
                     <button type="submit">Post Comment</button>
