@@ -10,7 +10,7 @@
 */
 
 // --- Global Data Store ---
-// This array will be populated with data fetched from 'students.json'.
+// This array will be populated with data fetched from the API.
 let students = [];
 
 // --- Element Selections ---
@@ -18,17 +18,22 @@ let students = [];
 // the HTML document is parsed before this script runs.
 
 // TODO: Select the student table body (tbody).
+const studentTableBody = document.getElementById("student-table-body");
 
 // TODO: Select the "Add Student" form.
 // (You'll need to add id="add-student-form" to this form in your HTML).
+const addStudentForm = document.getElementById("add-student-form");
 
 // TODO: Select the "Change Password" form.
 // (You'll need to add id="password-form" to this form in your HTML).
+const changePasswordForm = document.getElementById("password-form");
 
 // TODO: Select the search input field.
 // (You'll need to add id="search-input" to this input in your HTML).
+const searchInput = document.getElementById("search-input");
 
 // TODO: Select all table header (th) elements in thead.
+const tableHeaders = document.querySelectorAll("thead th");
 
 // --- Functions ---
 
@@ -44,7 +49,34 @@ let students = [];
  * - A "Delete" button with class "delete-btn" and a data-id attribute set to the student's ID.
  */
 function createStudentRow(student) {
-  // ... your implementation here ...
+  const row = document.createElement("tr");
+
+  const nameCell = document.createElement("td");
+  nameCell.textContent = student.name;
+
+  const idCell = document.createElement("td");
+  idCell.textContent = student.id;
+
+  const emailCell = document.createElement("td");
+  emailCell.textContent = student.email;
+
+  const actionCell = document.createElement("td");
+  const editButton = document.createElement("button");
+  editButton.type = "button";
+  editButton.className = "secondary edit-btn";
+  editButton.dataset.id = student.id;
+  editButton.textContent = "Edit";
+
+  const deleteButton = document.createElement("button");
+  deleteButton.type = "button";
+  deleteButton.className = "contrast delete-btn";
+  deleteButton.dataset.id = student.id;
+  deleteButton.textContent = "Delete";
+
+  actionCell.append(editButton, " ", deleteButton);
+  row.append(nameCell, idCell, emailCell, actionCell);
+
+  return row;
 }
 
 /**
@@ -56,7 +88,11 @@ function createStudentRow(student) {
  * 3. For each student, call `createStudentRow` and append the returned <tr> to `studentTableBody`.
  */
 function renderTable(studentArray) {
-  // ... your implementation here ...
+  if (!studentTableBody) return;
+  studentTableBody.innerHTML = "";
+  studentArray.forEach((student) => {
+    studentTableBody.appendChild(createStudentRow(student));
+  });
 }
 
 /**
@@ -71,8 +107,48 @@ function renderTable(studentArray) {
  * 4. If validation passes, show an alert: "Password updated successfully!"
  * 5. Clear all three password input fields.
  */
-function handleChangePassword(event) {
-  // ... your implementation here ...
+async function handleChangePassword(event) {
+  event.preventDefault();
+
+  const currentPassword = document.getElementById("current-password");
+  const newPassword = document.getElementById("new-password");
+  const confirmPassword = document.getElementById("confirm-password");
+
+  if (!currentPassword || !newPassword || !confirmPassword) return;
+
+  if (newPassword.value !== confirmPassword.value) {
+    alert("Passwords do not match.");
+    return;
+  }
+
+  if (newPassword.value.length < 8) {
+    alert("Password must be at least 8 characters.");
+    return;
+  }
+
+  try {
+    const response = await fetch("../auth/api/change_password.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        current_password: currentPassword.value,
+        new_password: newPassword.value,
+      }),
+    });
+
+    const data = await response.json();
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || "Failed to update password");
+    }
+
+    alert("Password updated successfully!");
+  } catch (error) {
+    alert(error.message || "Error updating password.");
+  }
+
+  currentPassword.value = "";
+  newPassword.value = "";
+  confirmPassword.value = "";
 }
 
 /**
@@ -90,8 +166,50 @@ function handleChangePassword(event) {
  * - Call `renderTable(students)` to update the view.
  * 5. Clear the "student-name", "student-id", "student-email", and "default-password" input fields.
  */
-function handleAddStudent(event) {
-  // ... your implementation here ...
+async function handleAddStudent(event) {
+  event.preventDefault();
+
+  const nameInput = document.getElementById("student-name");
+  const idInput = document.getElementById("student-id");
+  const emailInput = document.getElementById("student-email");
+  const defaultPasswordInput = document.getElementById("default-password");
+
+  if (!nameInput || !idInput || !emailInput || !defaultPasswordInput) return;
+
+  const name = nameInput.value.trim();
+  const id = idInput.value.trim();
+  const email = emailInput.value.trim();
+
+  if (!name || !id || !email) {
+    alert("Please fill out all required fields.");
+    return;
+  }
+
+  try {
+    const response = await fetch("api/index.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        student_id: id,
+        name,
+        email,
+        password: defaultPasswordInput.value || "password123",
+      }),
+    });
+
+    const result = await response.json();
+    if (!response.ok || !result.success) {
+      throw new Error(result.message || "Failed to add student");
+    }
+
+    await loadStudents();
+    nameInput.value = "";
+    idInput.value = "";
+    emailInput.value = "";
+    defaultPasswordInput.value = "";
+  } catch (error) {
+    alert(error.message || "Error adding student.");
+  }
 }
 
 /**
@@ -105,8 +223,56 @@ function handleAddStudent(event) {
  * - Call `renderTable(students)` to update the view.
  * 3. (Optional) Check for "edit-btn" and implement edit logic.
  */
-function handleTableClick(event) {
-  // ... your implementation here ...
+async function handleTableClick(event) {
+  const target = event.target;
+  if (!(target instanceof HTMLElement)) return;
+
+  if (target.classList.contains("delete-btn")) {
+    const idToDelete = target.dataset.id;
+    try {
+      const response = await fetch("api/index.php", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ student_id: idToDelete }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to delete student");
+      }
+      await loadStudents();
+    } catch (error) {
+      alert(error.message || "Error deleting student.");
+    }
+  }
+
+  if (target.classList.contains("edit-btn")) {
+    const idToEdit = target.dataset.id;
+    const student = students.find((s) => s.id === idToEdit);
+    if (!student) return;
+    const newName = prompt("Update name:", student.name);
+    if (newName === null) return;
+    const newEmail = prompt("Update email:", student.email);
+    if (newEmail === null) return;
+
+    try {
+      const response = await fetch("api/index.php", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          student_id: idToEdit,
+          name: newName.trim(),
+          email: newEmail.trim(),
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to update student");
+      }
+      await loadStudents();
+    } catch (error) {
+      alert(error.message || "Error updating student.");
+    }
+  }
 }
 
 /**
@@ -121,7 +287,18 @@ function handleTableClick(event) {
  * - Call `renderTable` with the *filtered array*.
  */
 function handleSearch(event) {
-  // ... your implementation here ...
+  const term = event.target.value.toLowerCase();
+
+  if (!term) {
+    renderTable(students);
+    return;
+  }
+
+  const filtered = students.filter((student) =>
+    student.name.toLowerCase().includes(term)
+  );
+
+  renderTable(filtered);
 }
 
 /**
@@ -139,7 +316,28 @@ function handleSearch(event) {
  * 6. After sorting, call `renderTable(students)` to update the view.
  */
 function handleSort(event) {
-  // ... your implementation here ...
+  const header = event.currentTarget;
+  if (!(header instanceof HTMLElement)) return;
+
+  const fields = ["name", "id", "email"];
+  const field = fields[header.cellIndex];
+  if (!field) return;
+
+  const currentDir = header.dataset.sortDir === "desc" ? "desc" : "asc";
+  const nextDir = currentDir === "asc" ? "desc" : "asc";
+  header.dataset.sortDir = nextDir;
+
+  students.sort((a, b) => {
+    const multiplier = nextDir === "asc" ? 1 : -1;
+    if (field === "id") {
+      const aNum = Number(a.id);
+      const bNum = Number(b.id);
+      return (aNum - bNum) * multiplier;
+    }
+    return a[field].localeCompare(b[field]) * multiplier;
+  });
+
+  renderTable(students);
 }
 
 /**
@@ -159,7 +357,81 @@ function handleSort(event) {
  * - "click" on each header in `tableHeaders` -> `handleSort`
  */
 async function loadStudentsAndInitialize() {
-  // ... your implementation here ...
+  const sessionOk = await verifySession();
+  if (!sessionOk) return;
+
+  await loadStudents();
+
+  if (changePasswordForm) {
+    changePasswordForm.addEventListener("submit", handleChangePassword);
+  }
+
+  if (addStudentForm) {
+    addStudentForm.addEventListener("submit", handleAddStudent);
+  }
+
+  const logoutButton = document.getElementById("logout-button");
+  if (logoutButton) {
+    logoutButton.addEventListener("click", handleLogout);
+  }
+
+  if (studentTableBody) {
+    studentTableBody.addEventListener("click", handleTableClick);
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener("input", handleSearch);
+  }
+
+  tableHeaders.forEach((header) => {
+    header.addEventListener("click", handleSort);
+  });
+}
+
+async function verifySession() {
+  try {
+    const response = await fetch("../auth/api/session.php");
+    const data = await response.json();
+    if (!data.logged_in || data.user?.role !== "admin") {
+      alert("You must be logged in as an admin to manage students.");
+      return false;
+    }
+    return true;
+  } catch (error) {
+    alert("Unable to verify session.");
+    return false;
+  }
+}
+
+async function loadStudents() {
+  try {
+    const response = await fetch("api/index.php");
+    const result = await response.json();
+    if (!response.ok || !result.success) {
+      throw new Error(result.message || "Failed to load students");
+    }
+    students = (result.data || []).map((s) => ({
+      id: s.student_id,
+      name: s.name,
+      email: s.email,
+    }));
+    renderTable(students);
+  } catch (error) {
+    console.error(error);
+    alert(error.message || "Error loading students.");
+    students = [];
+    renderTable(students);
+  }
+}
+
+async function handleLogout() {
+  try {
+    await fetch("../auth/api/logout.php", { method: "POST" });
+  } catch (error) {
+    // ignore error, we still redirect
+  } finally {
+    window.location.href = "../auth/login.html";
+  }
 }
 
 // --- Initial Page Load ---
