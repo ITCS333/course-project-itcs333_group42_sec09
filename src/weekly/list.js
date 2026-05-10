@@ -5,7 +5,7 @@
   1. Link this file to `list.html` using:
      <script src="list.js" defer></script>
 
-  2. In `list.html`, add an `id="week-list-section"` to the
+  2. In `list.html`, add an id="week-list-section" to the
      <section> element that will contain the weekly articles.
 
   3. Implement the TODOs below.
@@ -13,6 +13,7 @@
 
 // --- Element Selections ---
 // TODO: Select the section for the week list ('#week-list-section').
+const listSection = document.querySelector('#week-list-section');
 
 // --- Functions ---
 
@@ -24,7 +25,16 @@
  * (This is how the detail page will know which week to load).
  */
 function createWeekArticle(week) {
-  // ... your implementation here ...
+  const article = document.createElement('article');
+
+  article.innerHTML = `
+    <h2>${week.title}</h2>
+    <p>Starts on: ${week.startDate}</p>
+    <p>${week.description}</p>
+    <a href="details.html?id=${week.id}">View Details & Discussion</a>
+  `;
+
+  return article;
 }
 
 /**
@@ -39,7 +49,19 @@ function createWeekArticle(week) {
  * - Append the returned <article> element to `listSection`.
  */
 async function loadWeeks() {
-  // ... your implementation here ...
+  try {
+    const response = await fetch('weeks.json');
+    const weeks = await response.json();
+
+    listSection.innerHTML = '';
+
+    weeks.forEach(week => {
+      const weekArticle = createWeekArticle(week);
+      listSection.appendChild(weekArticle);
+    });
+  } catch (error) {
+    console.error("Error loading weeks:", error);
+  }
 }
 
 // --- Initial Page Load ---
